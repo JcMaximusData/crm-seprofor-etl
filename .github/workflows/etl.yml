@@ -1,6 +1,7 @@
 name: ETL Seguimiento
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "*/10 * * * *"
 
