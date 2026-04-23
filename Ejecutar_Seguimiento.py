@@ -84,7 +84,7 @@ print(f"🆕 Nuevos registros detectados: {len(df_nuevos)}")
 # =====================================================
 # 🔥 8) INSERT SOLO NUEVOS
 # =====================================================
-
+df_final = df_final.where(pd.notnull(df_final), None)
 records = df_nuevos.to_dict(orient="records")
 
 if len(records) == 0:
