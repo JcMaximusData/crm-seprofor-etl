@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from db import supabase
 
 # 🔹 URL de tu Google Sheets en CSV
@@ -52,7 +53,7 @@ df_final = pd.DataFrame({
     "comentarios": col(df, "COMENTARIOS").astype(str).str.strip(),
 })
 
-# 🔹 6) Limpiar vacíos
+# 🔹 6) Limpiar strings vacíos
 df_final = df_final.replace({"": None, "nan": None, "None": None})
 
 # =====================================================
@@ -82,9 +83,19 @@ else:
 print(f"🆕 Nuevos registros detectados: {len(df_nuevos)}")
 
 # =====================================================
-# 🔥 8) INSERT SOLO NUEVOS
+# 🔥 8) LIMPIEZA FINAL (CRÍTICO)
 # =====================================================
-df_final = df_final.where(pd.notnull(df_final), None)
+
+# 💥 eliminar NaN, inf, -inf
+df_nuevos = df_nuevos.replace([np.nan, np.inf, -np.inf], None)
+
+# 💥 asegurar tipos compatibles con JSON
+df_nuevos = df_nuevos.astype(object)
+
+# =====================================================
+# 🔥 9) INSERT SOLO NUEVOS
+# =====================================================
+
 records = df_nuevos.to_dict(orient="records")
 
 if len(records) == 0:
